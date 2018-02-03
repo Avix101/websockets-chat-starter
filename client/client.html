@@ -10,7 +10,86 @@
          online at your node.js address under /socket.io/socket.io.js 
          You can disable that on the server if desired
     -->
+	<script src="/socket.io/socket.io.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+	
+	<script type="text/babel">
+		
+		const connectSocket = (e) => {
+			const message = document.querySelector("#message");
+			const chat = document.querySelector("#chat");
+			const send = document.querySelector("#send");
+			const socket = io.connect();
+			
+			socket.on('connect', () => {
+				//console.log('connecting');
+				chat.value += "connecting...\n";
+				
+				let user = document.querySelector("#username").value;
+				
+				if(!user){
+					user = `user${Math.floor(Math.random() * 999)}`;
+				}
+				
+				socket.emit('join', {name: user});
+				
+				send.addEventListener('click', (e) => {
+				
+					if(message.value == ""){
+						return;
+					}
+				
+					if(message.value.charAt(0) != '/'){
+						socket.emit('msgToServer', {name: user, msg: message.value});
+					} else if(message.value.includes("/pm")){
+					
+						if(!message.value.includes('[') || !message.value.includes(']')){
+							chat.value += "To pm: '/pm [user] message'\n";
+							message.value = "";
+							return;
+						}
+						
+						let command = message.value.split('[')[1];
+						command = command.split(']');
+						
+						let to = command[0];
+						let msg = command[1];
+						
+						socket.emit('pMsgToServer', {to: to, name: user, msg: msg}); 
+					} else if(message.value.includes("/time")){
+						socket.emit('getTime', {name: user});
+					} else if(message.value.includes("/wizard")){
+						socket.emit('getWizard', {name: user});
+					}else {
+						chat.value += "Command not found.\n";
+					}
+					
+					message.value = "";
+				});
+			});
+			
+			socket.on('msg', (data) => {
+				//console.log(data);
+				chat.value += `${data.name}: ${data.msg}\n`;
+			});
+			
+			socket.on('pMsg', (data) => {
+				chat.value += `*Whispher* ${data.name}: ${data.msg}\n`;
+			});
+			
+			socket.on('sendWizard', (data) => {
+				chat.value += `${data.msg} ***Magic*** -${data.name}\n`;
+			});
+		};
+		
+		const init = () => {
+			const connect = document.querySelector("#connect");
+			connect.addEventListener('click', connectSocket);
+		};
+		
+		window.onload = init;
+		
+	</script>
 	<style>
 		textarea {
 			display: block;

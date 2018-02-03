@@ -1,0 +1,29 @@
+{
+  "name": "blans-websockets-chat",
+  "version": "1.0.0",
+  "description": "A simple chat server powered by websockets!",
+  "main": "./src/server.js",
+  "scripts": {
+	"start": "node ./src/server.js",
+	"pretest": "eslint ./src --fix",
+    "test": "echo \"Tests complete\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Avix101/websockets-chat-starter.git"
+  },
+  "author": "Stasha Blank",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Avix101/websockets-chat-starter/issues"
+  },
+  "homepage": "https://github.com/Avix101/websockets-chat-starter#readme",
+  "dependencies": {
+    "socket.io": "^2.0.4"
+  },
+  "devDependencies": {
+    "eslint": "^4.16.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0"
+  }
+}
